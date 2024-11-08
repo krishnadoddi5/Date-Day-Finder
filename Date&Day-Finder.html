@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Date&Day-Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(60deg ,rgb(115, 202, 226),rgb(100, 97, 97),rgb(194, 192, 192),rgb(151, 233, 148),white);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: rgb(221, 202, 217);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 3px rgba(227, 228, 237, 0.37);
+            border: 1.5px solid rgba(255, 255, 255, 0.18);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            background: linear-gradient(to left, rgb(239, 4, 4), rgb(6, 45, 240), red);
+            -webkit-background-clip: text; 
+            background-clip: text; 
+            color: transparent;
+            box-shadow: 4px 2px rgb(88, 78, 78);
+            border-radius: 5px;
+            padding: 2px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+            padding: 5px;
+        }
+
+        select, input[type="number"], input[type="date"], input[type="button"] {
+            width: 350px;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-left: 15px;
+            font-weight: bold;
+        }
+
+        input[type="button"] {
+            background-color: #a81492;
+            color: white;
+            cursor: pointer;
+            width: 300px;
+            transition: background-color 0.3s ease;
+            margin-left: 50px;
+            margin-top: 10px;
+        }
+
+        input[type="button"]:hover {
+            background-color: #1372d8;
+        }
+
+        .result {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #1e07f4;
+            border-radius: 10px;
+            padding: 10px;
+            animation: Date 5s  ;
+            animation-direction: alternate;
+
+        }
+
+        @keyframes Date {
+            from {
+                transform: translateX(-20%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0%);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Date/Day Finder</h1>
+
+        <label for="optionSelect">Choose Option:</label>
+        <select id="optionSelect" onchange="toggleFields()">
+            <option value="days">Enter Days (+/-)</option>
+            <option value="date">Find Days Between</option>
+        </select>
+
+        <div id="daysInputDiv">
+            <label for="daysInput">Enter Days (+/-):</label>
+            <input type="number" id="daysInput" placeholder="e.g. 10 or -5">
+        </div>
+
+        <div id="dateInputDiv" style="display: none;">
+            <label for="dateInput">Select Date:</label>
+            <input type="date" id="dateInput">
+        </div>
+
+        <input type="button" value="Calculate" onclick="calculate()">
+        <input type="button" value="Refresh" onclick="window.location.reload();">
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function toggleFields() {
+            const option = document.getElementById('optionSelect').value;
+            const daysInputDiv = document.getElementById('daysInputDiv');
+            const dateInputDiv = document.getElementById('dateInputDiv');
+
+            if (option === 'days') {
+                daysInputDiv.style.display = 'block';
+                dateInputDiv.style.display = 'none';
+            } else {
+                daysInputDiv.style.display = 'none';
+                dateInputDiv.style.display = 'block';
+            }
+        }
+
+        function calculate() {
+            const option = document.getElementById('optionSelect').value;
+            const resultDiv = document.getElementById('result');
+            const currentDate = new Date();
+
+            if (option === 'days') {
+                const daysInput = parseInt(document.getElementById('daysInput').value);
+                if (isNaN(daysInput)) {
+                    resultDiv.innerHTML = "Please enter a valid number of days.";
+                    return;
+                }
+                currentDate.setDate(currentDate.getDate() + daysInput);
+                const formattedDate = currentDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                resultDiv.innerHTML = `The Calculated date is <br><strong>${formattedDate}</strong>`;
+            } else {
+                const dateInput = document.getElementById('dateInput').value;
+                if (!dateInput) {
+                    resultDiv.innerHTML = "Please Select a valid Date.";
+                    return;
+                }
+                const selectedDate = new Date(dateInput);
+                const differenceInMilliseconds = Math.abs(currentDate - selectedDate);
+                const differenceInDays = Math.ceil(differenceInMilliseconds / (1000 * 60 * 60 * 24));
+                resultDiv.innerHTML = `The Difference Between the Selected Date and Default's Date(Today) is: <br><strong>${differenceInDays} day(s)</strong>.`;
+            }
+        }
+    </script>
+</body>
+</html>
